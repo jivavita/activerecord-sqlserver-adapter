@@ -30,7 +30,11 @@ module ActiveRecord
           when nil
             column.respond_to?(:sql_type) && column.sql_type == 'timestamp' ? 'DEFAULT' : super
           else
-            super
+            if column && [:uuid, :uniqueidentifier].include?(column.type)
+              "'#{quote_string(value)}'"
+            else
+              super
+            end
           end
         end
 
